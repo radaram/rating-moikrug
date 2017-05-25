@@ -1,0 +1,19 @@
+version: '2'
+services:
+  parser:
+    build:
+      context: .
+      dockerfile: docker/parser/Dockerfile
+    command: bash -c  "go install parser && parser"
+    volumes:
+      - ./parser:/go/src/parser 
+      - ./data:/go/src/data
+    depends_on:
+      - rabbitmq
+  rabbitmq:
+    image: rabbitmq:3
+    ports:
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
