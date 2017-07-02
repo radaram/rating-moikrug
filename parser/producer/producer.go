@@ -1,10 +1,12 @@
 package producer
 
 import (
+	"fmt"
 	"log"
 	"github.com/streadway/amqp"
 
 	"data"
+	"parser/settings"
 )
 
 func failOnError(err error, msg string) {
@@ -14,7 +16,15 @@ func failOnError(err error, msg string) {
 }
 
 func Send(c chan *data.Company) {
-	conn, err := amqp.Dial("amqp://rabbitmq:rabbitmq@rabbitmq:5672/")
+	conn, err := amqp.Dial(
+		fmt.Sprintf(
+			"amqp://%s:%s@%s:%s",
+			settings.RABBITMQ_USER,
+			settings.RABBITMQ_PASSWORD,
+			settings.RABBITMQ_HOST,
+			settings.RABBITMQ_PORT,
+		),
+	)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -42,7 +52,7 @@ func Send(c chan *data.Company) {
 					false,
 					false,
 					amqp.Publishing{
-						ContentType: "text/plain",
+						ContentType: "application/json",
 						Body: []byte(body),
 					})
 				failOnError(err, "Failed to publish a message")

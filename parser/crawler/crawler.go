@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	
+
+	"data"
 	"parser/settings"
 	"parser/producer"
-	"data"
 )
 
 
@@ -33,7 +33,10 @@ func grabCompanies(url string, c chan *data.Company) {
     })
 
 	next_page, _ := doc.Find(".pagination .next_page").Attr("href")
-	log.Println(next_page)
+	log.Println(settings.BASE_URL + next_page)
+	if (next_page != "") {
+		grabCompanies(settings.BASE_URL + next_page, c)
+	}
 }
 
 
