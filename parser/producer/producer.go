@@ -1,7 +1,6 @@
 package producer
 
 import (
-	"fmt"
 	"log"
 	"github.com/streadway/amqp"
 
@@ -16,15 +15,7 @@ func failOnError(err error, msg string) {
 }
 
 func Send(c chan *data.Company) {
-	conn, err := amqp.Dial(
-		fmt.Sprintf(
-			"amqp://%s:%s@%s:%s",
-			settings.RABBITMQ_USER,
-			settings.RABBITMQ_PASSWORD,
-			settings.RABBITMQ_HOST,
-			settings.RABBITMQ_PORT,
-		),
-	)
+	conn, err := amqp.Dial(settings.RABBITMQ_URL)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -33,7 +24,7 @@ func Send(c chan *data.Company) {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"companies", // queue name
+		settings.COMPANIES_QUEUE, // queue name
 		false,   // durable
 		false,   // delete when unused
 		false,   // exclusive

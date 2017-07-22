@@ -9,11 +9,13 @@ import (
 	"data"
 	"parser/settings"
 	"parser/producer"
+	"parser/consumer"
 )
 
 
 func RunCrawler() {
  	var c chan *data.Company = make(chan *data.Company)	
+	go consumer.Read()
 	go producer.Send(c)
 	grabCompanies(settings.COMPANIES_URL, c)
 	time.Sleep(10 * time.Second)
