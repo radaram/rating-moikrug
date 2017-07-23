@@ -2,26 +2,16 @@ package crawler
 
 import (
 	"log"
-	"time"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 
 	"data"
-	"parser/settings"
-	"parser/producer"
-	"parser/consumer"
+	"settings"
 )
 
-
-func RunCrawler() {
- 	var c chan *data.Company = make(chan *data.Company)	
-	go consumer.Read()
-	go producer.Send(c)
-	grabCompanies(settings.COMPANIES_URL, c)
-	time.Sleep(10 * time.Second)
-}
-
-func grabCompanies(url string, c chan *data.Company) {
+func GrabCompanies(url string, c chan *data.Company, wg *sync.WaitGroup) {
+	defer wg.Done()
 	doc, err := goquery.NewDocument(url)
 
 	if err != nil {
@@ -31,18 +21,20 @@ func grabCompanies(url string, c chan *data.Company) {
 	doc.Find(".companies-item").Each(func(i int, s *goquery.Selection) {
 		company_page, _ := s.Find(".title").Attr("href")
 		company_page = settings.BASE_URL + company_page
-	    go grabCompany(company_page, c)
+	    wg.Add(1)
+		go grabCompany(company_page, c, wg)
     })
 
 	next_page, _ := doc.Find(".pagination .next_page").Attr("href")
 	log.Println(settings.BASE_URL + next_page)
 	if (next_page != "") {
-		grabCompanies(settings.BASE_URL + next_page, c)
+		GrabCompanies(settings.BASE_URL + next_page, c, wg)
 	}
 }
 
 
-func grabCompany(url string, c chan *data.Company) {
+func grabCompany(url string, c chan *data.Company, wg *sync.WaitGroup) {
+	defer wg.Done()
 	doc, err := goquery.NewDocument(url)
 
     if err != nil {

@@ -2,10 +2,11 @@ package consumer
 
 import (
 	"log"
+	"sync"
 
 	"github.com/streadway/amqp"
 
-	"parser/settings"
+	"settings"
 
 )
 
@@ -15,7 +16,8 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func Read() {
+func Read(wg *sync.WaitGroup) {
+	defer wg.Done()
 	conn, err := amqp.Dial(settings.RABBITMQ_URL)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -36,8 +38,10 @@ func Read() {
 	failOnError(err, "Failed to register a consumer")
 
 	forever := make(chan bool)
-
+	
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		for d := range msgs {
 			log.Printf("Received a message: %s", d.Body)
 		}

@@ -4,9 +4,13 @@ services:
     build:
       context: .
       dockerfile: docker/parser/Dockerfile
-    command: bash -c  "go install parser && parser"
+    command: bash -c  "go run main.go"
     volumes:
-      - ./parser:/go/src/parser 
+      - ./main.go:/go/src/main.go
+      - ./settings:/go/src/settings
+      - ./consumer:/go/src/consumer
+      - ./crawler:/go/src/crawler
+      - ./producer:/go/src/producer
       - ./data:/go/src/data
     depends_on:
       - rabbitmq

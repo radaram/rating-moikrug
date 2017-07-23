@@ -2,10 +2,12 @@ package producer
 
 import (
 	"log"
+	"sync"
+
 	"github.com/streadway/amqp"
 
 	"data"
-	"parser/settings"
+	"settings"
 )
 
 func failOnError(err error, msg string) {
@@ -14,7 +16,8 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func Send(c chan *data.Company) {
+func Send(c chan *data.Company, wg *sync.WaitGroup) {
+	defer wg.Done()
 	conn, err := amqp.Dial(settings.RABBITMQ_URL)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
