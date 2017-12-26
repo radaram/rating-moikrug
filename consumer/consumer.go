@@ -16,8 +16,7 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func Read(wg *sync.WaitGroup) {
-	defer wg.Done()
+func Read() {
 	conn, err := amqp.Dial(settings.RABBITMQ_URL)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -39,9 +38,7 @@ func Read(wg *sync.WaitGroup) {
 
 	forever := make(chan bool)
 	
-	wg.Add(1)
 	go func() {
-		defer wg.Done()
 		for d := range msgs {
 			log.Printf("Received a message: %s", d.Body)
 		}

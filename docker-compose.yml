@@ -3,22 +3,16 @@ services:
   parser:
     build:
       context: .
-      dockerfile: docker/parser/Dockerfile
-    command: bash -c  "go run main.go"
+      dockerfile: docker/Dockerfile-parser
+    #command: bash -c  "go run *.go"
     volumes:
-      - ./main.go:/go/src/main.go
-      - ./settings:/go/src/settings
-      - ./consumer:/go/src/consumer
-      - ./crawler:/go/src/crawler
-      - ./producer:/go/src/producer
-      - ./data:/go/src/data
+      - ./parser:/go/src/parser
     depends_on:
       - rabbitmq
   rabbitmq:
     image: rabbitmq:3
     ports:
       - "5672:5672"
-      - "15672:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq
