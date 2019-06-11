@@ -1,18 +1,42 @@
-version: '2'
+version: '3'
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - 5677:5672
+      - 15677:15672
+    env_file:
+      - "./.env"
   parser:
     build:
       context: .
       dockerfile: docker/Dockerfile-parser
-    #command: bash -c  "go run *.go"
+    command: bash -c  "go run *.go"
     volumes:
       - ./parser:/go/src/parser
     depends_on:
       - rabbitmq
-  rabbitmq:
-    image: rabbitmq:3
-    ports:
-      - "5672:5672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=rabbitmq
-      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    env_file:
+      - "./.env"
+  calculator:
+    build:
+      context: .
+      dockerfile: docker/calculator/Dockerfile
+    command: bash -c  "go run *.go"
+    volumes:
+      - ./calculator:/go/src/calculator
+    depends_on:
+      - rabbitmq
+      - postgres
+    env_file:
+      - "./.env"
+  postgres:
+    build:
+      context: docker/postgres/
+      dockerfile: Dockerfile
+    env_file:
+      - "./.env"
+        #volumes:
+        #  - ./data:/var/lib/postgresql/data
+

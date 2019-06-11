@@ -6,16 +6,27 @@ import (
 	"fmt"
 )
 
-type company struct {
-	Name 	string
-	Page  	string
-	About 	string
-	Address string
-	Score 	uint16
+
+type Employee struct {
+	CompanyPage	string
+	CompanyName string
+	Amount int
 }
 
 
-func (c *company) ToJson() []byte {
+type Company struct {
+	Name 	string
+	Site  	string
+	About 	string
+	Rating  float32
+	Address string
+	Score 	int
+	EmployeesLeft []Employee
+	EmployeesCame []Employee
+}
+
+
+func (c *Company) ToJson() []byte {
 	b, err := json.Marshal(c)
 	if err != nil {
 		fmt.Println(err)

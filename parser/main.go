@@ -14,7 +14,7 @@ import (
 func parser() {
 	fmt.Println("Start parser...")
 	var wg sync.WaitGroup
-	var c chan *company = make(chan *company)	
+	var c chan *Company = make(chan *Company)	
 	wg.Add(1)
 	go send(c, &wg)
 	grabCompanies(COMPANIES_URL, c, &wg)

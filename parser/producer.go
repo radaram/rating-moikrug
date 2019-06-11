@@ -13,7 +13,7 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func send(c chan *company, wg *sync.WaitGroup) {
+func send(c chan *Company, wg *sync.WaitGroup) {
 	defer wg.Done()
 	conn, err := amqp.Dial(RABBITMQ_URL)
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -44,7 +44,8 @@ func send(c chan *company, wg *sync.WaitGroup) {
 					false,
 					amqp.Publishing{
 						ContentType: "application/json",
-						Body: []byte(body),
+						//Body: []byte(body),
+						Body: body,
 					})
 				failOnError(err, "Failed to publish a message")
 		}

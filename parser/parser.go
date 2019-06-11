@@ -3,11 +3,13 @@ package main
 import (
 	"log"
 	"sync"
+	"strings"
+	"strconv"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-func grabCompanies(url string, c chan *company, wg *sync.WaitGroup) {
+func grabCompanies(url string, c chan *Company, wg *sync.WaitGroup) {
 	
 	log.Println(url)
 	doc, err := goquery.NewDocument(url)
@@ -30,7 +32,7 @@ func grabCompanies(url string, c chan *company, wg *sync.WaitGroup) {
 }
 
 
-func grabCompany(url string, c chan *company, wg *sync.WaitGroup) {
+func grabCompany(url string, c chan *Company, wg *sync.WaitGroup) {
 	defer wg.Done()
 	
 	log.Println(url)
@@ -41,10 +43,61 @@ func grabCompany(url string, c chan *company, wg *sync.WaitGroup) {
     }
 
     name := doc.Find(".company_name a").Text()
+    site := doc.Find(".company_site a").Text()
     about := doc.Find(".company_about").Text()
+    ratingstr := doc.Find("span.rating").Text()
     address := doc.Find(".address").Text()
+   
+	var rating float32
+	value, err := strconv.ParseFloat(ratingstr, 32)
+	if err != nil {
+		log.Println(err)
+	} else {
+		rating = float32(value)
+	}
+    
+	came := companiesList(doc, ".left_section .company_item")
+	left := companiesList(doc, ".right_section .company_item")
 
-    company := company{name, url, about, address, 0}
+	company := Company{
+		name,
+		site,
+	    about, 
+		rating,
+		address, 
+		0,
+		left,
+		came,
+	}
     c <- &company
 }
 
+
+func companiesList(doc *goquery.Document, path string) []Employee {
+	var employees []Employee
+
+	doc.Find(path).Each(func(i int, s *goquery.Selection) {
+		page, _ := s.Find(".title").Attr("href")
+		page = BASE_URL + page
+		name := s.Find(".title").Text()
+		amountstr := s.Find(".count").Text()
+		amountstr = amountstr[: strings.Index(amountstr, " ")]
+        
+		var amount int64
+	    amount, err := strconv.ParseInt(amountstr, 10, 32)
+	    if err != nil {
+			log.Println(err)
+		}
+
+		log.Println(name, amount)
+		employees = append(
+			employees, 
+			Employee{
+				CompanyPage: page, 
+				CompanyName: name, 
+				Amount: int(amount),
+		})
+    })	
+
+	return employees
+}
