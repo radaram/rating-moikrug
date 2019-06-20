@@ -7,7 +7,15 @@ services:
       - 5677:5672
       - 15677:15672
     env_file:
+      - "./.env" 
+  postgres:
+    build:
+      context: docker/postgres/
+      dockerfile: Dockerfile
+    env_file:
       - "./.env"
+        #volumes:
+        #  - ./data:/var/lib/postgresql/data
   parser:
     build:
       context: .
@@ -31,12 +39,17 @@ services:
       - postgres
     env_file:
       - "./.env"
-  postgres:
+  web:
     build:
-      context: docker/postgres/
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: docker/web/Dockerfile
+    command: bash -c  "go run *.go"
+    volumes:
+      - ./web:/go/src/web
+    depends_on:
+      - postgres
     env_file:
       - "./.env"
-        #volumes:
-        #  - ./data:/var/lib/postgresql/data
+    ports:
+        - 7000:7000
 
