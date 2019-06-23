@@ -8,17 +8,18 @@ import (
 
 func getCompanies() ([]Company, error) {
 	var company Company
-	
+	var raw_employees_left, raw_employees_came []byte
+
 	rows, err := db.Query("SELECT * FROM company LIMIT 15")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 	
-	var e_came, e_left []uint8
 	companies := make([]Company, 0)
 	for rows.Next() {
-    	company = Company{}	
+    	company = Company{}
+		
 		err = rows.Scan(
 			&company.Name, 
 			&company.Site, 
@@ -26,16 +27,18 @@ func getCompanies() ([]Company, error) {
 			&company.Rating, 
 			&company.Address, 
 			&company.Score,
-			&e_left,
-			&e_came,
-			//&company.EmployeesLeft,
-			//&company.EmployeesCame,
+			&raw_employees_left,
+			&raw_employees_came,
 			&company.ID,
 		)
 		failOnError(err, "read company error")
 		if err != nil {
 			return nil, err
 		}
+
+		company.employeesLeftDecode(raw_employees_left)
+		company.employeesCameDecode(raw_employees_came)
+	
 		companies = append(companies, company)
 	}
 

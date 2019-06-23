@@ -13,6 +13,7 @@ type Employee struct {
 }
 
 
+
 type Company struct {
 	Name 	string
 	Site  	string
@@ -40,5 +41,20 @@ func (c *Company) employeesLeftJsonEncode() ([]byte, error) {
 func (c *Company) employeesCameJsonEncode() ([]byte, error) {
 	return json.Marshal(c.EmployeesCame)
 }
+
+func (c *Company) employeesLeftDecode(data []byte) error {
+	if err := json.Unmarshal(data, &c.EmployeesLeft); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Company) employeesCameDecode(data []byte) error {
+	if err := json.Unmarshal(data, &c.EmployeesCame); err != nil {
+		return err
+	}
+	return nil
+}
+
 
 
