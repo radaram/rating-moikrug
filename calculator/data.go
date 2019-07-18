@@ -20,6 +20,7 @@ type Company struct {
 	Rating  float32
 	Address string
 	Score 	int
+	Link    string
 	EmployeesLeft []Employee
 	EmployeesCame []Employee
 }

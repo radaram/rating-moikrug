@@ -1,0 +1,23 @@
+<html>
+    <body>
+        <h1>Рейтинг компаний moikrug.ru</h1>
+        <table>
+            <tr style='text-align: left'>
+                <th>Компания</th>
+                <th>Рейтинг</th>
+                <th>Ccылка</th>
+            </tr>
+            {{range .Companies}}
+            <tr>
+                <td>{{.Name}}</td>
+                <td>{{.Score}}</td>
+                <td><a href="https://moikrug.ru{{.Link}}">Перейти</a></td>
+            </tr>
+            {{end}}
+        </table>
+        {{ if gt .CurrentPage 1 }} 
+        <a href="?page={{.PreviousPage}}" style='margin-left: 20px'>&laquo;</a>
+        {{ end }}
+        <a href="?page={{.NextPage}}" style='margin-left: 40px'>&raquo;</a>
+    </body>
+</html>

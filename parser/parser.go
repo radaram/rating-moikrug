@@ -42,12 +42,14 @@ func grabCompany(url string, c chan *Company, wg *sync.WaitGroup) {
         log.Fatal(err)
     }
 
-    name := doc.Find(".company_name a").Text()
-    site := doc.Find(".company_site a").Text()
-    about := doc.Find(".company_about").Text()
-    ratingstr := doc.Find("span.rating").Text()
-    address := doc.Find(".address").Text()
-   
+    name := doc.Find(".company_info .company_name a").First().Text()
+    site := doc.Find(".company_info .company_site a").Text()
+    about := doc.Find(".company_info .company_about").Text()
+    ratingstr := doc.Find(".company_info span.rating").Text()
+    address := doc.Find(".company_info .address").Text()
+	link, _  := doc.Find(".company_info .company_name a").Attr("href")
+
+	log.Println(name) 
 	var rating float32
 	value, err := strconv.ParseFloat(ratingstr, 32)
 	if err != nil {
@@ -66,6 +68,7 @@ func grabCompany(url string, c chan *Company, wg *sync.WaitGroup) {
 		rating,
 		address, 
 		0,
+		link,
 		left,
 		came,
 	}
@@ -89,7 +92,7 @@ func companiesList(doc *goquery.Document, path string) []Employee {
 			log.Println(err)
 		}
 
-		log.Println(name, amount)
+		//log.Println(name, amount)
 		employees = append(
 			employees, 
 			Employee{

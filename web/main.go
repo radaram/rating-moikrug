@@ -34,6 +34,6 @@ func init() {
 
 
 func main() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", listCompaniesHandler)
 	http.ListenAndServe(":7000", nil)
 }

@@ -26,11 +26,12 @@ func saveResult(company Company) {
 	err = db.QueryRow("SELECT id FROM company WHERE name = $1", company.Name).Scan(&company_id)
 	if err == sql.ErrNoRows {
 		_, err = db.Exec(
-			"INSERT INTO company (name, site, about, raiting, address, score, employees_left, employees_came) " +
-			"VALUES ($1, $2, $3, $4, $5, $6, $7, $8)", 
+			"INSERT INTO company (name, site, about, raiting, address, score, link, employees_left, employees_came) " +
+			"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", 
 			company.Name, company.Site, 
 			company.About, company.Rating,
 			company.Address, company.Score, 
+			company.Link,
 			string(employeesLeftData), string(employeesCameData),
 		)
 		failOnError(err, "insert error")
@@ -40,10 +41,11 @@ func saveResult(company Company) {
     } else {
 		_, err = db.Exec("UPDATE company " + 
 				"SET site = $1, about = $2, rating = $3, address = $4, " +
-				"    score = $5, employee_left = $6 employee_came = $7 " +
+				"    score = $5, link = $6, employee_left = $7, employee_came = $8 " +
 			    "WHERE id = $8", 
 				 company.Site, company.About, 
 				 company.Rating, company.Address, company.Score, 
+				 company.Link,
 				 string(employeesLeftData), string(employeesCameData),
 				 company_id)
 		failOnError(err, "update error")
