@@ -21,7 +21,7 @@ func saveResult(company Company) {
 	employeesCameData, err := company.employeesCameJsonEncode()
 	failOnError(err, "json encoded error")
 
-	err = db.QueryRow("SELECT id FROM company WHERE name = $1", company.Name).Scan(&company_id)
+	err = db.QueryRow("SELECT id FROM company WHERE name = $1 LIMIT 1", company.Name).Scan(&company_id)
 	if err == sql.ErrNoRows {
 		_, err = db.Exec(
 			"INSERT INTO company (name, site, about, rating, address, score, link, employees_left, employees_came) "+
@@ -39,8 +39,8 @@ func saveResult(company Company) {
 	} else {
 		_, err = db.Exec("UPDATE company "+
 			"SET site = $1, about = $2, rating = $3, address = $4, "+
-			"    score = $5, link = $6, employee_left = $7, employee_came = $8 "+
-			"WHERE id = $8",
+			"    score = $5, link = $6, employees_left = $7, employees_came = $8 "+
+			"WHERE id = $9",
 			company.Site, company.About,
 			company.Rating, company.Address, company.Score,
 			company.Link,

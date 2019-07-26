@@ -42,7 +42,7 @@ func Read() {
 				log.Println(err)
 				continue
 			}
-			go calculate(company)
+			calculate(company)
 		}
 	}()
 
