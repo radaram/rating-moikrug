@@ -26,7 +26,6 @@ make web
 4. Перейти по адресу http://localhost:7000/
 
 
-5. Получить результат
 ![rating result](https://imgur.com/V69iy7J.png)
 
 
