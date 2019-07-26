@@ -22,7 +22,7 @@ func parser() {
 
 func main() {
 	c := cron.New()
-	err := c.AddFunc("0 */1 * * * *", parser)
+	err := c.AddFunc("0 0 */7 * * *", parser)
 	if err != nil {
 		log.Fatalf("Error AddFunc: %s", err)
 	}
