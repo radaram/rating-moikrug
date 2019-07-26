@@ -1,12 +1,8 @@
-build-parser:
-	docker-compose build parser
+run-parser:
+	docker-compose -d up parser
 
-stop-parser:
-	docker-compose stop parser
+run-calculator:
+	docker-compose -d up calculator
 
-remove-parser:
-	docker-compose rm --all -f parser
-
-up-parser:
-	docker-compose up parser
-
+run-web:
+	docker-compose -d up web
