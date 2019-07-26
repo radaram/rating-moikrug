@@ -1,35 +1,31 @@
 package main
 
-
 import (
 	"encoding/json"
 )
 
-
 type Employee struct {
-	CompanyPage	string
+	CompanyPage string
 	CompanyName string
-	Amount int
+	Amount      int
 }
 
-
 type Company struct {
-	Name 	string
-	Site  	string
-	About 	string
-	Rating  float32
-	Address string
-	Score 	int
-	Link    string
+	Name          string
+	Site          string
+	About         string
+	Rating        float32
+	Address       string
+	Score         int
+	Link          string
 	EmployeesLeft []Employee
 	EmployeesCame []Employee
 }
 
-
 func (c *Company) Decode(data []byte) error {
-    if err := json.Unmarshal(data, &c); err != nil {
-        return err
-    }
+	if err := json.Unmarshal(data, &c); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -40,7 +36,6 @@ func (c *Company) employeesLeftJsonEncode() ([]byte, error) {
 func (c *Company) employeesCameJsonEncode() ([]byte, error) {
 	return json.Marshal(c.EmployeesCame)
 }
-
 
 func (c *Company) getScoreForLeft() int {
 	total := 0
@@ -81,5 +76,3 @@ func (c *Company) getScoreForRating() int {
 func (c *Company) calculateTotalScore() int {
 	return c.getScoreForAddress() + c.getScoreForSite() + c.getScoreForRating() + c.getScoreForCame() - c.getScoreForLeft()
 }
-
-

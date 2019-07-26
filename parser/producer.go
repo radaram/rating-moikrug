@@ -25,30 +25,29 @@ func send(c chan *Company, wg *sync.WaitGroup) {
 
 	q, err := ch.QueueDeclare(
 		COMPANIES_QUEUE, // queue name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+		false,           // durable
+		false,           // delete when unused
+		false,           // exclusive
+		false,           // no-wait
+		nil,             // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 
 	for {
 		select {
-			case company := <- c:
-			    body := company.ToJson()
-				err = ch.Publish(
-					"",
-					q.Name,
-					false,
-					false,
-					amqp.Publishing{
-						ContentType: "application/json",
-						//Body: []byte(body),
-						Body: body,
-					})
-				failOnError(err, "Failed to publish a message")
+		case company := <-c:
+			body := company.ToJson()
+			err = ch.Publish(
+				"",
+				q.Name,
+				false,
+				false,
+				amqp.Publishing{
+					ContentType: "application/json",
+					//Body: []byte(body),
+					Body: body,
+				})
+			failOnError(err, "Failed to publish a message")
 		}
 	}
 }
-

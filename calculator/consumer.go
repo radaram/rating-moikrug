@@ -32,10 +32,10 @@ func Read() {
 	failOnError(err, "Failed to register a consumer")
 
 	forever := make(chan bool)
-	
+
 	go func() {
 		for d := range msgs {
-			//log.Printf("Received a message: %s", d.Body)	
+			//log.Printf("Received a message: %s", d.Body)
 			company = Company{}
 			err := company.Decode(d.Body)
 			if err != nil {

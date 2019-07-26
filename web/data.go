@@ -1,37 +1,32 @@
 package main
 
-
 import (
 	"encoding/json"
 )
 
-
 type Employee struct {
-	CompanyPage	string
+	CompanyPage string
 	CompanyName string
-	Amount int
+	Amount      int
 }
-
-
 
 type Company struct {
-	Name 	string
-	Site  	string
-	About 	string
-	Rating  float32
-	Address string
-	Score 	int
-	Link    string
+	Name          string
+	Site          string
+	About         string
+	Rating        float32
+	Address       string
+	Score         int
+	Link          string
 	EmployeesLeft []Employee
 	EmployeesCame []Employee
-	ID      int
+	ID            int
 }
 
-
 func (c *Company) Decode(data []byte) error {
-    if err := json.Unmarshal(data, &c); err != nil {
-        return err
-    }
+	if err := json.Unmarshal(data, &c); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -56,6 +51,3 @@ func (c *Company) employeesCameDecode(data []byte) error {
 	}
 	return nil
 }
-
-
-

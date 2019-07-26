@@ -3,31 +3,28 @@ package main
 import (
 	"fmt"
 	"log"
-	"sync"
 	"os"
 	"os/signal"
+	"sync"
 
 	"github.com/robfig/cron"
 )
 
-
 func parser() {
 	fmt.Println("Start parser...")
 	var wg sync.WaitGroup
-	var c chan *Company = make(chan *Company)	
+	var c chan *Company = make(chan *Company)
 	wg.Add(1)
 	go send(c, &wg)
 	grabCompanies(COMPANIES_URL, c, &wg)
 	wg.Wait()
 }
 
-
-
 func main() {
 	c := cron.New()
 	err := c.AddFunc("0 */1 * * * *", parser)
 	if err != nil {
-        log.Fatalf("Error AddFunc: %s", err)
+		log.Fatalf("Error AddFunc: %s", err)
 	}
 	c.Start()
 	sig := make(chan os.Signal)
