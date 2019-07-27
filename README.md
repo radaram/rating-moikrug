@@ -26,8 +26,9 @@ make web
 4. Перейти по адресу http://localhost:7000/
 
 
-![rating result](https://imgur.com/V69iy7J.png)
+![rating result1](https://imgur.com/V69iy7J.png)
 
+![rating result2](https://imgur.com/8U6p1ns.png)
 
 
 Как вычисляется рейтинг:
